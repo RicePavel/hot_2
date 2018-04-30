@@ -5,7 +5,45 @@ var $ = require("jquery");
 
 var startGame = function() {
     return function(dispatch) {
-        $.ajax({
+        setNewCurrentElement(dispatch, doneSuccess);  
+    };
+};
+
+var doneSuccess = function(current) {
+    return {
+        type: 'DONE_SUCCESS',
+        current
+    };
+};
+
+var selectCity = function(cityNumber) {
+    return {
+        type: 'SELECT_CITY',
+        cityNumber
+    };
+};
+
+var nextCity = function() {
+    return function(dispatch) {
+        setNewCurrentElement(dispatch, nextCitySuccess);
+    }
+}
+
+var nextCitySuccess = function(current) {
+    return {
+        type: 'NEXT_CITY_SUCCESS',
+        current
+    };
+};
+
+function getRandomInteger(min, max) {
+    var rand = min - 0.5 + Math.random() * (max - min + 1);
+    rand = Math.round(rand);
+    return rand;
+}
+ 
+function setNewCurrentElement(dispatch, action) {
+    $.ajax({
             url: 'city_list.txt',
             success: function(response) {
                 var arr = response.split('\n');
@@ -54,7 +92,7 @@ var startGame = function() {
                                        country: country_2
                                     }
                                };
-                               dispatch(doneSuccess(current)); 
+                               dispatch(action(current)); 
                            }
                         });  
                     }
@@ -63,43 +101,8 @@ var startGame = function() {
             error: function(response) {
                 alert('error');
             }
-        });
-    }
-};
-
-var doneSuccess = function(current) {
-    return {
-        type: 'DONE_SUCCESS',
-        current
-    };
-};
-
-var selectCity = function(cityNumber) {
-    return {
-        type: 'SELECT_CITY',
-        cityNumber
-    };
-};
-
-var nextCity = function() {
-    return {
-        type: 'NEXT_CITY'
-    };
+    });
 }
-
-var nextCitySuccess = function(newCurrent) {
-    return {
-        type: 'NEXT_CITY_SUCCESS',
-        newCurrent
-    };
-}
-
-function getRandomInteger(min, max) {
-    var rand = min - 0.5 + Math.random() * (max - min + 1);
-    rand = Math.round(rand);
-    return rand;
-}
- 
 
 module.exports = {startGame, nextCity, selectCity};
 

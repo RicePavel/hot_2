@@ -6,14 +6,28 @@
     <style>
         .city {
             border: 1px solid black;
-            width: 100px;
+            width: 150px;
             height: 100px;
             margin: 10px;
-            float: left;
-            cursor: pointer;
+            float: left; 
         }
-        .city:hover {
+        .city.hot {
+            border: 2px solid black;
+        }
+        .city.clickable {
+           cursor: pointer; 
+        }
+        .city.clickable:hover {
             background-color:gainsboro;
+        }
+        .clear {
+            clear: both;
+        }
+        .red-text {
+            color: red;
+        }
+        .green-text {
+            color: green;
         }
     </style>
 </head>
