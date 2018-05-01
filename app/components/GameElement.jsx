@@ -23,9 +23,9 @@ class GameElement extends React.Component {
             if (this.props.current && this.props.current.result !== undefined) {
                 var result = this.props.current.result;
                 if (result === 1) {
-                    head = <h2 className="green-text" >You WIN!</h2>;
+                    head = <h2 className="green-text" >You WON!</h2>;
                 } else if (result === 0) {
-                    head = <h2 className="red-text" >You Loose!</h2>;
+                    head = <h2 className="red-text" >You Lost!</h2>;
                 }
             }
         }
