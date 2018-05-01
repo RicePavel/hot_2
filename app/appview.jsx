@@ -1,147 +1,26 @@
 var React = require('react');
 var connect = require('react-redux').connect;
 var actions = require('./actions.jsx');
-var countries = require('./countries.jsx');
 
-class CityElement extends React.Component {
-    onClick() {
-        if (this.props.clickable) {
-            this.props.selectCity(this.props.cityNumber);
-        }
-    }
-    render() {
-        var tempRender = '';
-        var countryName = countries[this.props.country];
-        var celsTemp = this.props.temp - 273.15;
-        celsTemp = Math.ceil((celsTemp)*100)/100;
-        var fahrTemp = 1.8 * (this.props.temp - 273) + 32;
-        fahrTemp = Math.ceil((fahrTemp)*100)/100;
-        if (this.props.showTemp === true) {
-            var units = 'C';
-            if (this.props.units) {
-                units = this.props.units;
-            }
-            if (units === 'C') {
-                tempRender = celsTemp + ' C';
-            } else if (units === 'F') {
-                tempRender = fahrTemp + ' F';
-            }
-        }
-        var cssClass = "city";
-        if (this.props.clickable) {
-            cssClass += ' clickable';
-        }
-        if (this.props.hot) {
-            cssClass += ' hot';
-        }
-        return <div className={cssClass} onClick={this.onClick.bind(this)} >{this.props.name}, <br/> {countryName}, <br/> {tempRender} </div>;
-    }
-};
+var CityElement = require('./components/CityElement.jsx');
+var SettingsElement = require('./components/SettingsElement.jsx');
+var GameElement = require('./components/GameElement.jsx');
 
 
 class AppView extends React.Component {
-    setInitsCelsius() {
-        this.props.setUnits('C');
-    }
-    setUnitsFahrenheit() {
-        this.props.setUnits('F');
-    }
     render() {
-        var startButton = <button onClick={this.props.startGame} >Start</button>;
-        if (this.props.started === true) {
-            startButton = '';
-        }
-        
-        var scoreRender = '';
-        if (this.props.started === true) {
-            scoreRender = 'score: ' + this.props.score;
-        }
-        
-        var head = '';
-        if (this.props.started === true) {
-            head = <h2>Which city is hotter?</h2>;
-            if (this.props.current && this.props.current.result !== undefined) {
-                var result = this.props.current.result;
-                if (result === 1) {
-                    head = <h2 className="green-text" >You WIN!</h2>;
-                } else if (result === 0) {
-                    head = <h2 className="red-text" >You Loose!</h2>;
-                }
-            }
-        }
-        
-        var cityElement_1 = '';
-        var cityElement_2 = '';
-        if (this.props.current) {
-            var city_1 = this.props.current.city_1;
-            var city_2 = this.props.current.city_2;
-            var showTemp = false;
-            var clickable = true;
-            if (this.props.current.result !== undefined) {
-                showTemp = true;
-                clickable = false;
-            }
-            cityElement_1 = <CityElement units={this.props.units} cityNumber="1" hot={city_1.hot} clickable={clickable} selectCity={this.props.selectCity} name={city_1.name} country={city_1.country} temp={city_1.temp} showTemp={showTemp} id={city_1.id} />;
-            cityElement_2 = <CityElement units={this.props.units} cityNumber="2" hot={city_2.hot} clickable={clickable} selectCity={this.props.selectCity} name={city_2.name} country={city_2.country} temp={city_2.temp} showTemp={showTemp} id={city_2.id} />;
-        }
-        
-        var resultElement = '';
-        if (this.props.current && this.props.current.result !== undefined) {
-            resultElement = <div>{this.props.current.result}</div>;
-        }
-
-        var nextButton = '';
-        if (this.props.current && this.props.current.result !== undefined) {
-            nextButton = <button onClick={this.props.nextCity} >Next city</button>;
-        }
-        
-        var storyRender = [];
-        if (this.props.story) {
-            var units = this.props.units;
-            storyRender = this.props.story.map(function(item, i) {
-                var resultElement = '';
-                if (item.result === 1) {
-                    resultElement = <span className="green-text">V</span>;
-                } else {
-                   resultElement = <span className="red-text">X</span>; 
-                }
-                
-                return <div key={i} >
-                    <CityElement units={units} name={item.city_1.name} hot={item.city_1.hot} country={item.city_1.country} temp={item.city_1.temp} showTemp={true} id={item.city_1.id} />
-                    <CityElement units={units} name={item.city_2.name} hot={item.city_2.hot} country={item.city_2.country} temp={item.city_2.temp} showTemp={true} id={item.city_2.id} />
-                    {resultElement}
-                    <div className="clear" ></div>
-                    <br/>
-                </div>;
-            });
-        }
-        
-        var Settings = 
-                    <div>
-                        <h2>Units</h2>
-                        <input type='radio' onChange={this.setInitsCelsius.bind(this)} checked={this.props.units === 'C'} /> Celsius
-                        <input type='radio' onChange={this.setUnitsFahrenheit.bind(this)} checked={this.props.units === 'F'} /> Fahrenheit
-                    </div>;
-        
-        return(
+       
+       var GameRender = <GameElement started={this.props.started} current={this.props.current} score={this.props.score} units={this.props.units} startGame={this.props.startGame} selectCity={this.props.selectCity} nextCity={this.props.nextCity} />;
+       var SettingsRender = <SettingsElement setUnits={this.props.setUnits} units={this.props.units} story={this.props.story}  />;
+       
+       return(
                 <div>
-                    <div> 
-                        {startButton}
-                    </div>
-                    {scoreRender} <br/>
-                    {head}
-                    <div className="clear" ></div>
-                    {cityElement_1}
-                    {cityElement_2}
-                    <div className="clear" ></div>
-                    {nextButton}
-                    <div className="clear" ></div>
+                    {GameRender}
                     <hr/>
-                    {Settings}
-                    <h2>History:</h2>
-                    {storyRender}
+                    {SettingsRender}
                 </div>
         );
+       
     }
 };
 
