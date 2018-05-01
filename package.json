@@ -5,15 +5,18 @@
     "author": "metanit.com",
     "scripts": {
         "dev": "webpack-dev-server --hot --open",
-        "build": "webpack"
+        "build": "webpack",
+        "start": "lite-server"
     },
     "dependencies": {
         "immutable": "^3.8.2",
         "jquery": "^3.3.1",
+        "lite-server": "^2.3.0",
         "react": "^16.0.0",
         "react-dom": "^16.0.0",
         "react-redux": "^5.0.7",
         "react-router": "^4.2.0",
+        "react-router-dom": "^4.2.2",
         "redux": "^4.0.0",
         "redux-thunk": "^2.2.0"
     },

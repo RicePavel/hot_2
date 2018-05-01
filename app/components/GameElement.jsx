@@ -1,5 +1,9 @@
 var React = require('react');
 var CityElement = require('./CityElement.jsx');
+var Link = require('react-router-dom').Link;
+
+var connect = require('react-redux').connect;
+var actions = require('../actions.jsx');
 
 class GameElement extends React.Component {
    render() {
@@ -52,6 +56,9 @@ class GameElement extends React.Component {
         }  
         return(
                 <div>
+                    <div>
+                        <Link to="/settings">Settings</Link>
+                    </div> <br/><br/>
                     <div> 
                         {startButton}
                     </div>
@@ -69,4 +76,18 @@ class GameElement extends React.Component {
     } 
 };
 
+/*
 module.exports = GameElement;
+*/
+
+function mapStateToProps(state) {
+    return {
+        current: state.get("current"),
+        started: state.get('started'),
+        story: state.get('story'),
+        score: state.get('score'),
+        units: state.get('units')
+    };
+}
+
+module.exports = connect(mapStateToProps, actions)(GameElement);

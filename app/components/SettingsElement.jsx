@@ -1,5 +1,9 @@
 var React = require('react');
 var CityElement = require('./CityElement.jsx');
+var Link = require('react-router-dom').Link;
+
+var connect = require('react-redux').connect;
+var actions = require('../actions.jsx');
 
 class SettingsElement extends React.Component {
     setInitsCelsius() {
@@ -42,6 +46,9 @@ class SettingsElement extends React.Component {
         
         return (
             <div>
+                <div>
+                    <Link to="/">Back</Link>
+                </div>
                 {UnitsSettings}
                 <h2>History:</h2>
                 {storyRender}
@@ -50,4 +57,18 @@ class SettingsElement extends React.Component {
     }
 };
 
+/*
 module.exports = SettingsElement;
+*/
+
+function mapStateToProps(state) {
+    return {
+        current: state.get("current"),
+        started: state.get('started'),
+        story: state.get('story'),
+        score: state.get('score'),
+        units: state.get('units')
+    };
+}
+
+module.exports = connect(mapStateToProps, actions)(SettingsElement);
