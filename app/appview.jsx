@@ -14,8 +14,18 @@ class CityElement extends React.Component {
         var countryName = countries[this.props.country];
         var celsTemp = this.props.temp - 273.15;
         celsTemp = Math.ceil((celsTemp)*100)/100;
+        var fahrTemp = 1.8 * (this.props.temp - 273) + 32;
+        fahrTemp = Math.ceil((fahrTemp)*100)/100;
         if (this.props.showTemp === true) {
-            tempRender = celsTemp + ' C';
+            var units = 'C';
+            if (this.props.units) {
+                units = this.props.units;
+            }
+            if (units === 'C') {
+                tempRender = celsTemp + ' C';
+            } else if (units === 'F') {
+                tempRender = fahrTemp + ' F';
+            }
         }
         var cssClass = "city";
         if (this.props.clickable) {
@@ -30,6 +40,12 @@ class CityElement extends React.Component {
 
 
 class AppView extends React.Component {
+    setInitsCelsius() {
+        this.props.setUnits('C');
+    }
+    setUnitsFahrenheit() {
+        this.props.setUnits('F');
+    }
     render() {
         var startButton = <button onClick={this.props.startGame} >Start</button>;
         if (this.props.started === true) {
@@ -65,8 +81,8 @@ class AppView extends React.Component {
                 showTemp = true;
                 clickable = false;
             }
-            cityElement_1 = <CityElement cityNumber="1" hot={city_1.hot} clickable={clickable} selectCity={this.props.selectCity} name={city_1.name} country={city_1.country} temp={city_1.temp} showTemp={showTemp} id={city_1.id} />;
-            cityElement_2 = <CityElement cityNumber="2" hot={city_2.hot} clickable={clickable} selectCity={this.props.selectCity} name={city_2.name} country={city_2.country} temp={city_2.temp} showTemp={showTemp} id={city_2.id} />;
+            cityElement_1 = <CityElement units={this.props.units} cityNumber="1" hot={city_1.hot} clickable={clickable} selectCity={this.props.selectCity} name={city_1.name} country={city_1.country} temp={city_1.temp} showTemp={showTemp} id={city_1.id} />;
+            cityElement_2 = <CityElement units={this.props.units} cityNumber="2" hot={city_2.hot} clickable={clickable} selectCity={this.props.selectCity} name={city_2.name} country={city_2.country} temp={city_2.temp} showTemp={showTemp} id={city_2.id} />;
         }
         
         var resultElement = '';
@@ -81,6 +97,7 @@ class AppView extends React.Component {
         
         var storyRender = [];
         if (this.props.story) {
+            var units = this.props.units;
             storyRender = this.props.story.map(function(item, i) {
                 var resultElement = '';
                 if (item.result === 1) {
@@ -90,14 +107,21 @@ class AppView extends React.Component {
                 }
                 
                 return <div key={i} >
-                    <CityElement name={item.city_1.name} hot={item.city_1.hot} country={item.city_1.country} temp={item.city_1.temp} showTemp={true} id={item.city_1.id} />
-                    <CityElement name={item.city_2.name} hot={item.city_2.hot} country={item.city_2.country} temp={item.city_2.temp} showTemp={true} id={item.city_2.id} />
+                    <CityElement units={units} name={item.city_1.name} hot={item.city_1.hot} country={item.city_1.country} temp={item.city_1.temp} showTemp={true} id={item.city_1.id} />
+                    <CityElement units={units} name={item.city_2.name} hot={item.city_2.hot} country={item.city_2.country} temp={item.city_2.temp} showTemp={true} id={item.city_2.id} />
                     {resultElement}
                     <div className="clear" ></div>
                     <br/>
                 </div>;
             });
         }
+        
+        var Settings = 
+                    <div>
+                        <h2>Units</h2>
+                        <input type='radio' onChange={this.setInitsCelsius.bind(this)} checked={this.props.units === 'C'} /> Celsius
+                        <input type='radio' onChange={this.setUnitsFahrenheit.bind(this)} checked={this.props.units === 'F'} /> Fahrenheit
+                    </div>;
         
         return(
                 <div>
@@ -113,6 +137,7 @@ class AppView extends React.Component {
                     {nextButton}
                     <div className="clear" ></div>
                     <hr/>
+                    {Settings}
                     <h2>History:</h2>
                     {storyRender}
                 </div>
@@ -125,7 +150,8 @@ function mapStateToProps(state) {
         current: state.get("current"),
         started: state.get('started'),
         story: state.get('story'),
-        score: state.get('score')
+        score: state.get('score'),
+        units: state.get('units')
     };
 }
 

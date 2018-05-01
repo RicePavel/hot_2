@@ -24,11 +24,15 @@ var Map = require('immutable').Map;
 	story: [
 		
 	],
-	score: 
+	score: 0,
+        units: 'C'
 }
 */
 
-var initialMap = Map({score: 0});
+var initialMap = Map({
+    score: 0,
+    units: 'C'
+});
 
 var reducer = function(state = initialMap, action) {
     switch (action.type) {
@@ -85,6 +89,10 @@ var reducer = function(state = initialMap, action) {
             story = story.slice(0);
             state = state.set("story", story);
             state = state.set("current", nextCurrent);
+            return state;
+        case 'SET_UNITS':
+            var units = action.units;
+            state = state.set('units', units);
             return state;
     }
     return state;
